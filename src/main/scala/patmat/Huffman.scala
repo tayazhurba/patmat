@@ -64,14 +64,14 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] ={
-    def timeOfChar(x: Char, chars: List[Char], acc: Int): List[(Char, Int)]={
-      if (chars.isEmpty) List((x, acc))
-      else if (chars.head == x) timeOfChar(x, chars.tail, acc+1)
-      else timeOfChar(x, chars.tail, acc)
+  def times(chars: List[Char]): List[(Char, Int)] = {
+    def timeOfChar(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] = {
+      if (chars.isEmpty) acc
+      else timeOfChar(chars.tail.filter(_ != chars.head), acc :+ (chars.head, 1 + chars.tail.count(_ == chars.head)))
     }
-    timeOfChar(chars.head,chars.filter(_==chars.head),0);
+    timeOfChar(chars, List())
   }
+
   /**
    * Возвращает список узлов `Leaf` по заданной таблице частотности `freqs`.
    *
