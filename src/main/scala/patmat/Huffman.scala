@@ -188,13 +188,15 @@ object Huffman {
    */
     def convert(tree: CodeTree): CodeTable = {
     def convert1(bits: List[Bit], tree: CodeTree): CodeTable = tree match {
-      case Fork(l, r, c, w) => convert1(0::bits,l)
-      case Fork(l, r, c, w) => convert1(1::bits,r)
+      case Fork(l, r, c, w) => {
+        convert1(0::bits,l)
+        convert1(1::bits,r)
+      }
       case Leaf(c,w) => List((c,bits))
     }
     convert1(Nil, tree)
   }
-  
+
   /**
    * Эта функция принимает две кодовой таблицы и делает слияние их в одну. В зависимости от того, как вы 
    * используете ее в методе `convert`, этот метод merge может также производить некоторые трансформации 
@@ -214,24 +216,10 @@ object Huffman {
 object Main extends App{
   println("hello =)")
 
-  // println(Huffman.makeOrderedLeafList(Huffman.times("hello".toList)))
-
   val hc = Huffman.decodedSecret
   println(hc)
 
   val he = Huffman.encodeSecret
   println(he)
-//
-//  val code = Huffman.encode(Huffman.frenchCode)(hc)
-//  println(code)
-//
-//  val table = Huffman.convert(Huffman.frenchCode)
-//  println(table)
-//
-//  val ch = Huffman.codeBits(table)('d')
-//  println(ch)
-//
-//  val q = Huffman.quickEncode(Huffman.frenchCode)("huffmanestcool".toList)
-//  println(q)
-
+  
 }
