@@ -188,11 +188,11 @@ object Huffman {
    */
     def convert(tree: CodeTree): CodeTable = {
     def convert1(bits: List[Bit], tree: CodeTree): CodeTable = tree match {
-      case Fork(l, r, c, w) => {
-        convert1(0::bits,l)
-        convert1(1::bits,r)
+      case Fork(l, r, _, _) => {
+        convert1(0::bits, l)
+        convert1(1::bits, r)
       }
-      case Leaf(c,w) => List((c,bits))
+      case Leaf(c, _) => List((c, bits.reverse))
     }
     convert1(Nil, tree)
   }
@@ -221,5 +221,5 @@ object Main extends App{
 
   val he = Huffman.encodeSecret
   println(he)
-  
+
 }
