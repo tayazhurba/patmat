@@ -16,9 +16,7 @@ object Huffman {
   abstract class CodeTree
   case class Fork(left: CodeTree, right: CodeTree, chars: List[Char], weight: Int) extends CodeTree
   case class Leaf(char: Char, weight: Int) extends CodeTree
-  
 
-  // Часть 1: Базовая
     def weight(tree: CodeTree): Int = tree match{
       case Fork(_, _, _, weight) => weight
       case Leaf(_, weight) => weight
@@ -78,12 +76,15 @@ object Huffman {
    * Возвращает список, который должен быть упорядочен по возрастанию весов (т.е.
    * голова списка должна иметь наименьший вес), где вес узла - есть частота символа.
    */
-    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
-  
+    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+      freqs.sortWith((elem1,elem2) => elem1._2 < elem2._2).map((elem) => Leaf(elem._1,elem._2))
+    }
   /**
    * Проверяет, содержит ли список `trees` только одно кодовое дерево.
    */
-    def singleton(trees: List[CodeTree]): Boolean = ???
+    def singleton(trees: List[CodeTree]): Boolean = {
+    trees.size == 1
+  }
   
   /**
    * Параметр `trees` этой функции - список деревьев кода, упорядоченных по возрастанию весов.
@@ -94,17 +95,17 @@ object Huffman {
    *
    * Если `trees` является списком, меньше чем из двух элементов, список дожен вернуться неизменным
    */
-    def combine(trees: List[CodeTree]): List[CodeTree] = ???
+    def combine(trees: List[CodeTree]): List[CodeTree] = trees match{
+    case left::right::chars => (makeCodeTree(left, right)::chars).sortWith((elem1,elem2) => weight(elem1) < weight(elem2))
+    case _ => trees
+  }
   
   /**
-   * Эта функция будет вызвана следующим образом:
+   * Эта функция будет вызвана следующим образом: until(singleton, combine)(trees)
    *
-   *   until(singleton, combine)(trees)
+   * где `trees` имеет тип `List[CodeTree]`, `singleton` и `combine` - это две функции определенные выше.
    *
-   * где `trees` имеет тип `List[CodeTree]`, `singleton` и `combine` - это две функции
-   * определенные выше.
-   *
-   * При таком вызовеIn such an invocation, `until` должен вызывать две функции до тех пор пока список
+   * При таком вызове `until` должен вызывать две функции до тех пор пока список
    * кодовых деревьев не будет содержать только одно дерево, и затем вернет этот список.
    *
    * Подсказка: перед написанием реализаци,
@@ -113,7 +114,10 @@ object Huffman {
    *    Еще определите тип возвращаемого значения функции `until`.
    *  - постарайтесь подобрать значимые имена параметров для `xxx`, `yyy` и `zzz`.
    */
-    def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+    def until(single: List[CodeTree] => Boolean, listTrees: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] = {
+      if (single(trees)) trees
+      else until(single,listTrees)(combine(trees))
+  }
   
   /**
    * ЭТа функция создает дерева кода , оптимальное для кодирования текста `chars`.
